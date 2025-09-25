@@ -1,2 +1,2 @@
 # mysql-python
-Deploy MYSQL using Python and Docker
+Deploy MySQL using Python and Docker
