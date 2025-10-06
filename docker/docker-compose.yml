@@ -6,7 +6,7 @@ services:
     image: mysql:8
     restart: always
     command:
-      - --authentication-policy=mysql_native_password
+      - --mysql-native-password=ON
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --innodb_force_recovery=0
