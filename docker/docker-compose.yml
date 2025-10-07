@@ -1,7 +1,7 @@
 services:
   mysql_container:
     env_file:
-      - .env
+      - ../.env
     container_name: mysql_container
     hostname: mysql_container
     image: mysql:8
