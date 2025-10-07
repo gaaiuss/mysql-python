@@ -2,6 +2,7 @@ import os
 
 import dotenv
 import pymysql
+import pymysql.cursors
 
 dotenv.load_dotenv()
 
@@ -16,6 +17,8 @@ connection = pymysql.connect(
     user=USER,
     password=PASSWORD,
     database=DATABASE,
+    # Changes the default cursor to a Dict return
+    cursorclass=pymysql.cursors.DictCursor,
 )
 
 # SQL Variables
@@ -213,5 +216,26 @@ with connection:  # pymysql has a context manager, so I can use "with"
         connection.commit()
 
         cursor.execute(f'SELECT * FROM {TABLE}')
+        # for row in cursor.fetchall():
+        #     print(row)
+
+    # ------------------------------ UTILITIES --------------------------------
+
+    # Cursor as a DICT (See the connection cursor declaration: LINE 21)
+    with connection.cursor() as cursor:
+        cursor.execute(f'SELECT * FROM {TABLE}')
+
+        # for row in cursor.fetchall():
+        #     # Get all row values id, name, age, unit
+        #     print(row[0])
+        #     print(row[1])
+        #     print(row[2])
+        #     print(row[3])
+
+        # for row in cursor.fetchall():
+        #     # Get all row values id, name, age, unit
+        #     id, name, age, unit = row
+        #     print(id, name, age, unit)
+
         for row in cursor.fetchall():
             print(row)
