@@ -19,6 +19,8 @@ connection = pymysql.connect(
     database=DATABASE,
     # Changes the default cursor to a Dict return
     cursorclass=pymysql.cursors.DictCursor,
+    # SSCursor / SSDict Cursor for great number of data (Unbuffered)
+    # cursorclass=pymysql.cursors.SSDictCursor,
 )
 
 # SQL Variables
@@ -223,7 +225,7 @@ with connection:  # pymysql has a context manager, so I can use "with"
 
     # Cursor as a DICT (See the connection cursor declaration: LINE 21)
     with connection.cursor() as cursor:
-        cursor.execute(f'SELECT * FROM {TABLE}')
+        select_result = cursor.execute(f'SELECT * FROM {TABLE}')
 
         # for row in cursor.fetchall():
         #     # Get all row values id, name, age, unit
@@ -237,5 +239,49 @@ with connection:  # pymysql has a context manager, so I can use "with"
         #     id, name, age, unit = row
         #     print(id, name, age, unit)
 
-        for row in cursor.fetchall():
+        # for row in cursor.fetchall():
+        #     print(row)
+
+        # Cursor scroll (How to return the cursor position)
+        # The cursor not stored in any variable is good for performance
+        # obviously
+        # for row in cursor.fetchall():
+        #     print(row)
+
+        # print('\nFor after run out:')
+        # cursor.scroll(-2)
+        # cursor.scroll(0, 'absolute')'
+        # for row in cursor.fetchall():
+        #     print(row)
+
+        # SSCursor / SSDict Cursor for great number of data, It returns a
+        # generator (You can break the loop and continue later)
+        # for row in cursor.fetchall_unbuffered():
+        #     print(row)
+
+        #     if row['id'] >= 5:
+        #         break
+
+        # print('\nFor after run out:')
+
+        # The generator remembers where he stoped at
+        # for row in cursor.fetchall_unbuffered():
+        #     print(row)
+
+        # Same result but different ways to achieve
+        data6 = cursor.fetchall()
+
+        for row in data6:
             print(row)
+
+        # cursor.execute(f'SELECT id from {TABLE} ORDER BY id DESC LIMIT 1')
+        # last_id_from_select = cursor.fetchone()
+
+        print('\nSelect Result', select_result)
+        print('len(data6)', len(data6))
+        print('rowcount', cursor.rowcount)
+        # Last inserted id row in the database, unless it a executemany(), then
+        # it returns the first inserted row in the data insert block
+        print('lastrowid', cursor.lastrowid)
+        # print('lastrowid hardcoded', last_id_from_select)
+        print('row number', cursor.rownumber)
